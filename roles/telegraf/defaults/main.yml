@@ -1,0 +1,15 @@
+---
+telegraf_version: 1.9.5-1
+jolokia_version: 1.6.0
+cassandra_version: 3.11.3
+#### jolokia variables ###
+jolokia_file_name: "jolokia-jvm-{{ jolokia_version }}-agent.jar"
+jolokia_url: "http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/{{ jolokia_version }}/{{ jolokia_file_name }}"
+jolokia_parent_dir: /opt/jolokia
+jolokia_user: www-data
+jolokia_group: www-data
+jolokia_agent_port: 7777
+jolokia_agent_host: localhost
+####Kafka consumer variable ######
+kafka_consumer_timeout: "1m"
+kafka_consumer_interval: "1m"

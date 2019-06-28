@@ -1,0 +1,16 @@
+# Statsd UDP/TCP Server
+ [[inputs.statsd]]
+
+   name_prefix = "{{ project }}_"
+   protocol = "udp"
+   tcp_keep_alive = false
+   service_address = ":8100"
+   delete_gauges = true
+   delete_counters = true
+   delete_sets = true
+   percentiles = [90,95,99]
+   metric_separator = "_"
+   parse_data_dog_tags = true
+   allowed_pending_messages = 10000
+   percentile_limit = 1000
+

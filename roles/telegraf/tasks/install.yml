@@ -1,0 +1,32 @@
+---
+- name:  Get telegraf debian package from S3
+  get_url: url=https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb dest=/tmp/telegraf_{{ telegraf_version }}.deb mode=0644
+  when: ansible_os_family == 'Debian'
+
+- name: "Telegraf install"
+  shell: echo y | dpkg -i telegraf_{{ telegraf_version }}.deb
+  args:
+     chdir: /tmp
+  when: ansible_os_family == 'Debian'
+
+- name: "cleaning"
+  file:
+     path: "/tmp/telegraf_{{ telegraf_version }}.deb"
+     state: absent
+  when: ansible_os_family == 'Debian'
+
+- name:  Get Telegraf rpm package from S3
+  get_url: url=https://dl.influxdata.com/telegraf/releases/telegraf-{{ telegraf_version }}.x86_64.rpm dest=/tmp/telegraf_{{ telegraf_version }}.rpm mode=0644
+  when: ansible_os_family == 'RedHat'
+
+- name: "Telegraf install"
+  shell: rpm -ivh telegraf_{{ telegraf_version }}.rpm
+  args:
+     chdir: /tmp
+  when: ansible_os_family == 'RedHat'
+
+- name: "cleaning"
+  file:
+     path: "/tmp/telegraf_{{ telegraf_version }}.rpm"
+     state: absent
+  when: ansible_os_family == 'RedHat'

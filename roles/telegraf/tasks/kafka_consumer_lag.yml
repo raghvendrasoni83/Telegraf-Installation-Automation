@@ -1,0 +1,21 @@
+- name: "add telegraf in kafka group"
+  user:
+    name: "telegraf"
+    groups: "kafka"
+    append: yes
+
+
+- name: "Copy kafka_consumer_lag script"
+  copy:
+    src: "kafka_consumer_lag_reporter.py"
+    dest: "/opt/kafka_consumer_lag_reporter.py"
+    owner: "kafka"
+    group: "kafka"
+    mode: 754
+
+- name: "telegraf kafka_consumer_lag plugin"
+  template:
+    src: "kafka_consumer_lag.conf.j2"
+    dest: "/etc/telegraf/telegraf.d/kafka_consumer_lag.conf"
+    mode: 0644
+  notify: restart telegraf

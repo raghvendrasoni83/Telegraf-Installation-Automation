@@ -1,0 +1,24 @@
+
+- name: "telegraf jolokia import for kafka"
+  get_url:
+    url: http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/{{ jolokia_version }}/jolokia-jvm-{{ jolokia_version }}-agent.jar
+    dest: "/opt/jolokia-jvm-{{ jolokia_version }}-agent.jar"
+    mode: 0644
+    owner: kafka
+    group: kafka
+
+- name: "add jolokia lib path for kafka"
+  lineinfile:
+    dest: /opt/kafka/bin/kafka-run-class.sh
+    line: KAFKA_JMX_OPTS="$KAFKA_JMX_OPTS -javaagent:/opt/jolokia-jvm-{{ jolokia_version }}-agent.jar"
+
+- name: "include kafka_consumer_lag"
+  include: kafka_consumer_lag.yml
+  run_once: true
+
+- name: "telegraf kafka plugin"
+  template:
+    src: "kafka.conf.j2"
+    dest: "/etc/telegraf/telegraf.d/kafka.conf"
+    mode: 0644
+  notify: restart telegraf

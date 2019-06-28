@@ -1,0 +1,151 @@
+- name: "telegraf basic config"
+  template:
+      src: "telegraf.conf.j2"
+      dest: "/etc/telegraf/telegraf.conf"
+      mode: 0644
+
+- include: kafka.yml
+  tags:
+    - kafka
+  become: true
+  when: "'kafka' in role and 'consumer' not in role"
+
+- name: "telegraf redis"
+  template:
+      src: "redis.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/redis.conf"
+      mode: 0644
+  tags: redis
+  notify: restart telegraf
+
+- name: "telegraf elasticsearch"
+  template:
+      src: "elasticsearch.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/elasticsearch.conf"
+      mode: 0644
+  tags: elasticsearch
+  notify: restart telegraf
+
+- name: "telegraf zookeeper"
+  template:
+      src: "zookeeper.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/zookeeper.conf"
+      mode: 0644
+  tags: zookeeper
+  notify: restart telegraf
+
+# For application level metrics like(Java,Python,Springboot,nginx,djano,Kafka_cosumer,etc.),we can you statd.
+- name: "telegraf app"
+  template:
+      src: "statd.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/statd.conf"
+      mode: 0644
+  tags: app
+  notify: restart telegraf
+
+- name: "telegraf mysql"
+  template:
+      src: "mysql.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/mysql.conf"
+      mode: 0644
+  tags: mysql
+  notify: restart telegraf
+
+- name: "telegraf aerospike"
+  template:
+      src: "aerospike.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/aerospike.conf"
+      mode: 0644
+  tags: aerospike
+  notify: restart telegraf
+
+- name: "telegraf rabbitmq"
+  template:
+      src: "rabbitmq.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/rabbitmq.conf"
+      mode: 0644
+  tags: rabbitmq
+  notify: restart telegraf
+
+- name: "telegraf haproxy"
+  template:
+      src: "haproxy.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/haproxy.conf"
+      mode: 0644
+  tags: haproxy
+  notify: restart telegraf
+
+- name: "telegraf hadoop_yarn"
+  template:
+      src: "hadoop_yarn.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/hadoop_yarn.conf"
+      mode: 0644
+  tags: hadoop_yarn
+  notify: restart telegraf
+
+- name: "telegraf hadoop_namenode"
+  template:
+      src: "hadoop_namenode.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/hadoop_namenode.conf"
+      mode: 0644
+  tags: hadoop_namenode
+  notify: restart telegraf
+ 
+- name: "telegraf hadoop_datanode"
+  template:
+      src: "hadoop_datanode.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/hadoop_datanode.conf"
+      mode: 0644
+  tags: hadoop_datanode
+  notify: restart telegraf
+
+- name: "telegraf mongodb"
+  template:
+      src: "mongodb.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/mongodb.conf"
+      mode: 0644
+  tags: mongodb
+  notify: restart telegraf
+
+- name: "telegraf kibana"
+  template:
+      src: "kibana.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/kibana.conf"
+      mode: 0644
+  tags: kibana
+  notify: restart telegraf
+
+- name: "telegraf jolokia import for cassandra"
+  get_url:
+      url: http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/{{ jolokia_version }}/jolokia-jvm-{{ jolokia_version }}-agent.jar
+      dest: "/opt/jolokia-jvm-{{ jolokia_version }}-agent.jar"
+      mode: 0644
+      owner: cassandra
+      group: cassandra
+  tags: cassandra
+
+- name: "Test for jolokia lib file for cassandra"
+  shell: grep 'jolokia-jvm' /data/apache-cassandra-{{ cassandra_version }}/conf/cassandra-env.sh|cat
+  register: cj_check
+
+- name: "add jolokia lib path for cassandra"
+  lineinfile:
+    dest: /data/apache-cassandra-{{ cassandra_version }}/conf/cassandra-env.sh
+    line: JVM_OPTS="$JVM_OPTS -javaagent:/opt/jolokia-jvm-{{ jolokia_version }}-agent.jar"
+  when: "cj_check.stdout == ''
+
+- name: "telegraf cassandra"
+  template:
+      src: "cassandra.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/cassandra.conf"
+      mode: 0644
+  tags: cassandra
+  notify: restart telegraf
+
+- name: "telegraf postgres"
+  template:
+      src: "postgres.conf.j2"
+      dest: "/etc/telegraf/telegraf.d/postgres.conf"
+      mode: 0644
+  tags: postgres
+  notify: restart telegraf

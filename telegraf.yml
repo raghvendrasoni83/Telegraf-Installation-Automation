@@ -1,0 +1,4 @@
+ hosts: "{{ target_host }}"
+  roles:
+     - { role: telegraf }
+  become: true

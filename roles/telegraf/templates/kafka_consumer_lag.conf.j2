@@ -1,0 +1,5 @@
+[[inputs.exec]]
+  commands = ["/usr/bin/python /opt/kafka_consumer_lag_reporter.py --kafka-dir=/opt/kafka --bootstrap-server {{ ansible_play_hosts| join(':9092,') }}:9092"]
+  data_format = "influx"
+  timeout = "{{ kafka_consumer_timeout }}"
+  interval = "{{ kafka_consumer_interval }}"

@@ -1,0 +1,70 @@
+
+[global_tags]
+  ip = "{{ ansible_default_ipv4.address }}"
+
+[agent]
+  interval = "10s"
+
+  round_interval = true
+
+  metric_batch_size = 1000
+
+  metric_buffer_limit = 10000
+
+  collection_jitter = "0s"
+
+  flush_interval = "10s"
+  flush_jitter = "0s"
+
+  precision = ""
+
+  debug = false
+  quiet = false
+  logfile = "/var/log/telegraf/telegraf.log"
+
+  hostname = ""
+  omit_hostname = false
+
+
+###############################################################################
+#                            OUTPUT PLUGINS                                   #
+###############################################################################
+
+
+ [[outputs.kafka]]
+   brokers = ["Monitoringkillbill-9b696bc885220d1d.elb.ap-south-1.amazonaws.com:80","Monitoringkillbill36-08cd7c37d4c83684.elb.ap-south-1.amazonaws.com:80","monitoringkillbill104-1aaf932806296c39.elb.ap-south-1.amazonaws.com:80"]
+   topic = "telegraf-{{ project_key }}-{{ project }}"
+   client_id = "telegraf-{{ project_key }}-{{ project }}"
+   data_format = "influx"
+##############################################################################
+#                            INPUT PLUGINS                                    #
+##############################################################################
+
+
+[[inputs.cpu]]
+  percpu = false
+  totalcpu = true
+  collect_cpu_time = false
+  report_active = false
+
+[[inputs.system]]
+
+
+[[inputs.disk]]
+
+  ignore_fs = ["tmpfs", "devtmpfs", "devfs", "overlay", "aufs", "squashfs"]
+
+
+[[inputs.mem]]
+
+[[inputs.diskio]]
+
+[[inputs.internal]]
+
+[[inputs.swap]]
+
+[[inputs.processes]]
+
+[[inputs.netstat]]
+
+[[inputs.net]]

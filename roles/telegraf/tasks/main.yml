@@ -1,0 +1,16 @@
+- include: install.yml
+  tags:
+    - install
+  become: true
+
+- include: default_config.yml
+  tags:
+    - config
+  become: true
+
+- include: jolokia_agent.yml 
+  tags: 
+    - jolokia_agent
+  when: jolokia_agent is defined 
+  become: true
+

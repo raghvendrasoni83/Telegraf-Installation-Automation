@@ -1,0 +1,7 @@
+[[inputs.kafka_consumer]]
+  brokers = ["{{ ansible_default_ipv4.address }}:9092"]
+  topics = ["{{ bu }}_telegraf"]
+  consumer_group = "{{ bu }}_telegraf_metrics_consumers"
+  offset = "oldest"
+  max_message_len = 1000000
+  data_format = "influx"
